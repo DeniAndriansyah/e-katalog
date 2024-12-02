@@ -1,0 +1,24 @@
+Product :
+id
+name
+category
+price
+image
+stock : boolean
+
+kategori product:
+id
+name
+
+user:
+id
+username
+password
+name
+role
+image
+
+pesanan :
+
+
+
