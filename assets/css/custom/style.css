@@ -1,0 +1,56 @@
+
+.receipt {
+    position: sticky; /* Agar receipt tetap di tempat saat scroll */
+    top: 20px; /* Jarak dari atas */
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Courier New', Courier, monospace;
+    z-index: 10;
+}
+
+
+.receipt-header,
+.receipt-footer {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.receipt-body {
+    margin-bottom: 20px;
+}
+
+.receipt-body p {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.receipt-footer {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.receipt-footer button {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.receipt p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.receipt h4 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#total-price {
+    font-size: 20px;
+    color: green;
+}

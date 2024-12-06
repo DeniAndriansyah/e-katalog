@@ -10,126 +10,311 @@
 </div>
 
 <!-- General JS Scripts -->
-<script src="<?= base_url('assets/') ?>modules/jquery.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/popper.js"></script>
-<script src="<?= base_url('assets/') ?>modules/tooltip.js"></script>
-<script src="<?= base_url('assets/') ?>modules/bootstrap/js/bootstrap.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/nicescroll/jquery.nicescroll.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/moment.min.js"></script>
-<script src="<?= base_url('assets/') ?>js/stisla.js"></script>
+<script src="<?=base_url('assets/')?>modules/jquery.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/popper.js"></script>
+<script src="<?=base_url('assets/')?>modules/tooltip.js"></script>
+<script src="<?=base_url('assets/')?>modules/bootstrap/js/bootstrap.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/nicescroll/jquery.nicescroll.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/moment.min.js"></script>
+<script src="<?=base_url('assets/')?>js/stisla.js"></script>
 
 <!-- JS Libraies -->
-<script src="<?= base_url('assets/') ?>modules/sweetalert/sweetalert.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/datatables/datatables.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/datatables/Select-1.2.4/js/dataTables.select.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/jquery-ui/jquery-ui.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/sweetalert/sweetalert2.all.js"></script>
+<script src="<?=base_url('assets/')?>modules/datatables/datatables.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/datatables/Select-1.2.4/js/dataTables.select.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/jquery-ui/jquery-ui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-<script src="<?= base_url('assets/') ?>modules/upload-preview/assets/js/jquery.uploadPreview.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/upload-preview/assets/js/jquery.uploadPreview.min.js"></script>
 
 
 
 <!-- Page Specific JS File -->
 
 <!-- Template JS File -->
-<script src="<?= base_url('assets/') ?>js/scripts.js"></script>
-<script src="<?= base_url('assets/') ?>js/custom.js"></script>
+<script src="<?=base_url('assets/')?>js/scripts.js"></script>
+<script src="<?=base_url('assets/')?>js/custom.js"></script>
 
 <!-- Confirm Delete -->
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
+    // Menghentikan tautan dari navigasi langsung
+    $('.btn-hapus').on('click', function(event) {
+        event.preventDefault(); // Mencegah aksi default tautan
+        var href = $(this).attr('href'); // Ambil URL dari atribut href
 
-        // Menghentikan tautan dari navigasi langsung
-        $('.btn-hapus').on('click', function(event) {
-            event.preventDefault();
-            var href = $(this).attr('href');
-
-            // Menampilkan dialog konfirmasi SweetAlert
-            swal({
-                title: "Are you sure the data will be deleted?",
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-            }).then((willDelete) => {
-                if (willDelete) {
-                    // Jika pengguna mengkonfirmasi logout, arahkan ke URL logout
-                    window.location.href = href;
-                }
-            });
+        // Menampilkan dialog konfirmasi SweetAlert
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect ke URL jika dikonfirmasi
+                window.location.href = href;
+            }
         });
-
     });
+});
 </script>
+
 
 <!-- ALERT -->
 <?php
-if ($this->session->flashdata('success')) { ?>
-    <script>
-        var successMessage = <?php echo json_encode($this->session->flashdata('success')); ?>;
-        $(document).ready(function() {
-            swal("Good Job!", successMessage, "success");
-        });
-    </script>
-<?php } else if ($this->session->flashdata('warning')) { ?>
-    <script>
-        var warningMessage = <?php echo json_encode($this->session->flashdata('warning')); ?>;
-        $(document).ready(function() {
+$alertType = '';
+$alertTitle = '';
+$alertMessage = '';
 
-            swal("Oops!", warningMessage, "warning");
-        });
-    </script>
-<?php } else if ($this->session->flashdata('error')) { ?>
-    <script>
-        var errorMessage = <?php echo json_encode($this->session->flashdata('error')); ?>;
-        $(document).ready(function() {
+if ($this->session->flashdata('success')) {
+    $alertType = 'success';
+    $alertTitle = 'Good Job!';
+    $alertMessage = $this->session->flashdata('success');
+} elseif ($this->session->flashdata('warning')) {
+    $alertType = 'warning';
+    $alertTitle = 'Oops!';
+    $alertMessage = $this->session->flashdata('warning');
+} elseif ($this->session->flashdata('error')) {
+    $alertType = 'error';
+    $alertTitle = 'Error!';
+    $alertMessage = $this->session->flashdata('error');
+}
 
-            swal("Error!", errorMessage, "error");
-        });
-    </script>
-<?php } ?>
+if ($alertType): ?>
+<script>
+$(document).ready(function() {
+    Swal.fire("<?=$alertTitle;?>", <?=json_encode($alertMessage);?>, "<?=$alertType;?>");
+});
+</script>
+<?php endif;?>
+
 
 <!-- Data Tables -->
 <script>
-    $(".table").dataTable();
+$(".table").dataTable();
 </script>
 
 <!-- SLUG AUTO -->
 <script>
-    $(document).ready(function() {
-        $('#title-slug').on('keyup', function() {
-            var title = $(this).val();
-            var slug = title.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
-            $('#slug').val(slug);
-        });
+$(document).ready(function() {
+    $('#title-slug').on('keyup', function() {
+        var title = $(this).val();
+        var slug = title.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+        $('#slug').val(slug);
     });
+});
 </script>
 
 <!-- FANCYBOX -->
 <script>
-    $(document).ready(function() {
-        $(".fancybox").fancybox({
-            openEffect: "none",
-            closeEffect: "none"
+$(document).ready(function() {
+    $(".fancybox").fancybox({
+        openEffect: "none",
+        closeEffect: "none"
+    });
+
+    $(".zoom").hover(function() {
+
+        $(this).addClass('transition');
+    }, function() {
+
+        $(this).removeClass('transition');
+    });
+});
+
+$.uploadPreview({
+    input_field: "#image-upload", // Default: .image-upload
+    preview_box: "#image-preview", // Default: .image-preview
+    label_field: "#image-label", // Default: .image-label
+    label_default: "Choose File", // Default: Choose File
+    label_selected: "Change File", // Default: Change File
+    no_label: false, // Default: false
+    success_callback: null // Default: null
+});
+</script>
+
+<!-- Add To Cart -->
+<script>
+$(document).ready(function() {
+    // Fungsi untuk memuat data keranjang
+    function loadCart() {
+        $.ajax({
+            url: "<?=base_url('order/load_cart')?>",
+            method: "GET",
+            dataType: "json",
+            success: function(response) {
+                let cartHtml = '';
+                let total = 0;
+
+                response.cart.forEach(item => {
+                    cartHtml += `
+                        <div class="receipt-item">
+    <p><strong>${item.name}</strong></p>
+    <p>Rp ${item.price.toLocaleString()} x
+        <button class="btn btn-sm btn-secondary btn-decrease" data-id="${item.product_id}">-</button>
+        <span id="quantity-${item.product_id}">${item.quantity}</span>
+        <button class="btn btn-sm btn-secondary btn-increase" data-id="${item.product_id}">+</button>
+        = Rp ${(item.subtotal).toLocaleString()}</p>
+</div>
+`;
+                    total += item.subtotal;
+                });
+
+                $('#cart-body').html(cartHtml);
+                $('#total-price').text(`Rp ${total.toLocaleString()}`);
+            }
         });
+    }
 
-        $(".zoom").hover(function() {
+    // Tambahkan produk ke keranjang saat tombol "Tambah" diklik
+    $(document).on('click', '.btn-add-to-cart', function() {
+        const product_id = $(this).data('id');
+        const product_name = $(this).data('name');
+        const product_price = $(this).data('price');
 
-            $(this).addClass('transition');
-        }, function() {
-
-            $(this).removeClass('transition');
+        $.ajax({
+            url: "<?=base_url('order/add_to_cart')?>",
+            method: "POST",
+            data: {
+                product_id,
+                product_name,
+                product_price,
+                quantity: 1
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.success) {
+                    // alert('Produk berhasil ditambahkan ke keranjang!');
+                    loadCart();
+                }
+            }
         });
     });
 
-    $.uploadPreview({
-        input_field: "#image-upload", // Default: .image-upload
-        preview_box: "#image-preview", // Default: .image-preview
-        label_field: "#image-label", // Default: .image-label
-        label_default: "Choose File", // Default: Choose File
-        label_selected: "Change File", // Default: Change File
-        no_label: false, // Default: false
-        success_callback: null // Default: null
+    // Ketika tombol + diklik
+    $(document).on('click', '.btn-increase', function() {
+        // $('.btn-increase').on('click', function() {
+        console.log("test");
+
+        var productId = $(this).data('id');
+        var quantityElement = $('#quantity-' + productId);
+        var quantity = parseInt(quantityElement.text());
+
+        // Meningkatkan jumlah
+        quantity++;
+        quantityElement.text(quantity);
+
+        // Update subtotal
+        var price = parseFloat($(this).closest('.receipt-item').find('p').first().text().replace('Rp ',
+            '').replace(' x', '').trim());
+        var subtotal = price * quantity;
+        $(this).closest('.receipt-item').find('p').last().text('Rp ' + subtotal.toLocaleString());
+
+        // Update session cart dengan jumlah baru
+        updateCart(productId, quantity);
     });
+
+    $(document).on('click', '.btn-decrease', function() {
+        console.log("Tombol - diklik");
+
+        var productId = $(this).data('id');
+        var quantityElement = $('#quantity-' + productId);
+        var quantity = parseInt(quantityElement.text());
+
+        // Mengurangi jumlah jika lebih dari 1
+        if (quantity > 1) {
+            quantity--;
+            quantityElement.text(quantity);
+
+            // Update subtotal
+            var price = parseFloat($(this).closest('.receipt-item').find('p').first().text().replace(
+                'Rp ', '').replace(' x', '').trim());
+            var subtotal = price * quantity;
+            $(this).closest('.receipt-item').find('p').last().text('Rp ' + subtotal.toLocaleString());
+
+            // Update session cart dengan jumlah baru
+            updateCart(productId, quantity);
+        } else {
+            // Jika quantity sudah 1 dan tombol - ditekan, hapus produk dari keranjang dan struk
+            if (confirm('Anda yakin ingin menghapus produk ini?')) {
+                // Hapus produk dari keranjang di session
+                removeFromCart(productId);
+
+                // Hapus elemen produk di struk
+                $(this).closest('.receipt-item').remove();
+            }
+        }
+    });
+
+    // Simpan pesanan
+    $('#place-order').on('click', function() {
+        const table_number = prompt('Masukkan nomor meja:');
+        const customer_name = prompt('Masukkan nama pelanggan:');
+
+        if (!table_number || !customer_name) {
+            alert('Nomor meja dan nama pelanggan harus diisi!');
+            return;
+        }
+
+        $.ajax({
+            url: "<?=base_url('order/place_order')?>",
+            method: "POST",
+            data: {
+                table_number,
+                customer_name
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    console.log(response);
+                    alert(response.message);
+                }
+            }
+        });
+    });
+    // Fungsi untuk mengupdate cart di server
+    function updateCart(productId, quantity) {
+        $.ajax({
+            url: '<?=base_url("order/update_cart")?>',
+            type: 'POST',
+            data: {
+                product_id: productId,
+                quantity: quantity
+            },
+            success: function(response) {
+                // Handle response jika perlu
+                loadCart();
+            }
+        });
+    }
+
+    // Fungsi untuk menghapus produk dari cart
+    function removeFromCart(productId) {
+        $.ajax({
+            url: '<?=base_url("order/remove_from_cart")?>',
+            type: 'POST',
+            data: {
+                product_id: productId
+            },
+            success: function(response) {
+                console.log('Produk berhasil dihapus dari keranjang');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error removing product:', error);
+            }
+        });
+    }
+
+    // Muat keranjang saat halaman dimuat
+    loadCart();
+});
 </script>
 </body>
 
