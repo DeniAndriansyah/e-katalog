@@ -35,10 +35,11 @@
                 <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
                     <div class="receipt">
                         <div class="receipt-header">
-                            <h4>Struk Belanja</h4>
-                            <p>Nomor Meja: <span id="table-number">-</span></p>
-                            <p>Nama: <span id="customer-name">-</span></p>
-                            <p>Tanggal: <span id="order-date"><?=date('Y-m-d H:i:s')?></span></p>
+                            <h4>Receipt</h4>
+                            <p>Table Number: <span id="table-number">-</span></p>
+                            <p>Customer Name: <span id="customer-name">-</span></p>
+                            <?php date_default_timezone_set('Asia/Jakarta');?>
+                            <p>Order Date: <span id="order-date"><?=date('Y-m-d H:i:s')?></span></p>
                         </div>
 
                         <div class="receipt-body" id="cart-body">
@@ -47,7 +48,7 @@
 
                         <div class="receipt-footer">
                             <p><strong>Total: <span id="total-price">Rp 0</span></strong></p>
-                            <button type="button" id="place-order" class="btn btn-success mt-3">Simpan Pesanan</button>
+                            <button type="button" id="place-order" class="btn btn-success mt-3">Save Order</button>
                         </div>
                     </div>
                 </div>

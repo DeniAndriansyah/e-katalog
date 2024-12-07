@@ -36,11 +36,12 @@ foreach ($orders as $order) {?>
                                         <td><?=$order->order_date?></td>
                                         <td><?=$order->status?></td>
                                         <td>
-                                            <a href="<?=base_url('order/detail/' . $order->id)?>"
-                                                class="btn btn-sm btn-warning">
+                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                                data-target="#orderDetailModal"
+                                                onclick="loadOrderDetail(<?=$order->id?>)">
                                                 <span class="fa fa-eye"></span> Detail
-                                            </a>
-                                            <a href="#" data-href="<?=base_url('order/delete/' . $order->id)?>"
+                                            </button>
+                                            <a href="<?=base_url('order/delete/' . $order->id)?>"
                                                 class="btn btn-sm btn-danger btn-hapus">
                                                 <span class="fa fa-trash"></span> Del
                                             </a>
@@ -55,4 +56,25 @@ foreach ($orders as $order) {?>
             </div>
         </div>
     </section>
+</div>
+
+<!-- Modal detail order -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailModalLabel">Order Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Konten detail order akan dimuat di sini -->
+                <div id="modalOrderContent" class="d-flex justify-content-center">Loading...</div>
+            </div>
+            <div class="modal-footer bg-whitesmoke br">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>

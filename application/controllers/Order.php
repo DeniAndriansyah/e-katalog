@@ -37,6 +37,31 @@ class Order extends CI_Controller
         $this->load->view('component/admin/footer');
     }
 
+    public function detail($order_id)
+    {
+        // Ambil detail pesanan berdasarkan ID
+        $order_detail = $this->Order_m->get_order_details($order_id);
+        $order = $this->Order_m->get_order_by_id($order_id);
+
+        if (!$order_detail) {
+            echo '<p>Order not found!</p>';
+            return;
+        }
+
+        // Ambil data struk (receipt) sesuai dengan order
+        $receipt = $this->load->view('pages/admin/order/receipt', ['order_detail' => $order_detail, 'order' => $order], true);
+
+        // Kembalikan tampilan struk sebagai response (HTML)
+        echo $receipt;
+    }
+
+    public function delete($id)
+    {
+        $this->Base_m->delete('order', $id);
+        $this->session->set_flashdata('success', 'Order deleted successfully');
+        redirect('order');
+    }
+
     public function load_cart()
     {
         $cart = $this->session->userdata('cart') ?? [];
@@ -45,10 +70,10 @@ class Order extends CI_Controller
 
     public function add_to_cart()
     {
-        $product_id = $this->input->post('product_id');
-        $product_name = $this->input->post('product_name');
-        $product_price = $this->input->post('product_price');
-        $quantity = $this->input->post('quantity');
+        $product_id = htmlspecialchars($this->input->post('product_id'));
+        $product_name = htmlspecialchars($this->input->post('product_name'));
+        $product_price = htmlspecialchars($this->input->post('product_price'));
+        $quantity = htmlspecialchars($this->input->post('quantity'));
         $cart = $this->session->userdata('cart') ?? [];
 
         if (isset($cart[$product_id])) {
@@ -70,7 +95,7 @@ class Order extends CI_Controller
 
     public function remove_from_cart()
     {
-        $product_id = $this->input->post('product_id');
+        $product_id = htmlspecialchars($this->input->post('product_id'));
         $cart = $this->session->userdata('cart') ?? [];
 
         if (isset($cart[$product_id])) {
@@ -83,8 +108,8 @@ class Order extends CI_Controller
 
     public function place_order()
     {
-        $table_number = $this->input->post('table_number');
-        $customer_name = $this->input->post('customer_name');
+        $table_number = htmlspecialchars($this->input->post('table_number'));
+        $customer_name = htmlspecialchars($this->input->post('customer_name'));
         $cart = $this->session->userdata('cart') ?? [];
 
         if (empty($cart)) {
@@ -119,8 +144,8 @@ class Order extends CI_Controller
     public function update_cart()
     {
         // Mendapatkan data dari request
-        $product_id = $this->input->post('product_id');
-        $quantity = $this->input->post('quantity');
+        $product_id = htmlspecialchars($this->input->post('product_id'));
+        $quantity = htmlspecialchars($this->input->post('quantity'));
 
         // Ambil cart yang ada di session
         $cart = $this->session->userdata('cart') ?? [];

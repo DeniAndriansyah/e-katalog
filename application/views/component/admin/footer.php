@@ -42,6 +42,8 @@ $(document).ready(function() {
     $('.btn-hapus').on('click', function(event) {
         event.preventDefault(); // Mencegah aksi default tautan
         var href = $(this).attr('href'); // Ambil URL dari atribut href
+        console.log(href);
+
 
         // Menampilkan dialog konfirmasi SweetAlert
         Swal.fire({
@@ -239,46 +241,109 @@ $(document).ready(function() {
             // Update session cart dengan jumlah baru
             updateCart(productId, quantity);
         } else {
-            // Jika quantity sudah 1 dan tombol - ditekan, hapus produk dari keranjang dan struk
-            if (confirm('Anda yakin ingin menghapus produk ini?')) {
-                // Hapus produk dari keranjang di session
-                removeFromCart(productId);
-
-                // Hapus elemen produk di struk
-                $(this).closest('.receipt-item').remove();
-            }
+            // Jika quantity sudah 1 dan tombol - ditekan, gunakan SweetAlert untuk konfirmasi
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Anda yakin ingin menghapus produk ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Hapus produk dari keranjang di session
+                    removeFromCart(productId);
+                    // Hapus elemen produk di struk
+                    $(this).closest('.receipt-item').remove();
+                    Swal.fire('Dihapus!', 'Produk berhasil dihapus.', 'success');
+                }
+            });
         }
     });
 
     // Simpan pesanan
     $('#place-order').on('click', function() {
-        const table_number = prompt('Masukkan nomor meja:');
-        const customer_name = prompt('Masukkan nama pelanggan:');
+        let table_number, customer_name;
 
-        if (!table_number || !customer_name) {
-            alert('Nomor meja dan nama pelanggan harus diisi!');
-            return;
-        }
-
-        $.ajax({
-            url: "<?=base_url('order/place_order')?>",
-            method: "POST",
-            data: {
-                table_number,
-                customer_name
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message);
-                    location.reload();
-                } else {
-                    console.log(response);
-                    alert(response.message);
+        // SweetAlert untuk input nomor meja
+        Swal.fire({
+            title: 'Enter Table Number',
+            input: 'text',
+            inputPlaceholder: 'Table Number',
+            showCancelButton: true,
+            confirmButtonText: 'Next',
+            cancelButtonText: 'Cancel',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Table number cannot be empty!';
                 }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                table_number = result.value; // Simpan nomor meja
+
+                // SweetAlert untuk input nama pelanggan
+                Swal.fire({
+                    title: 'Enter Customer Name',
+                    input: 'text',
+                    inputPlaceholder: 'Customer Name',
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return 'Customer name cannot be empty!';
+                        }
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        customer_name = result.value; // Simpan nama pelanggan
+
+                        // Jalankan AJAX hanya setelah kedua input valid
+                        $.ajax({
+                            url: "<?=base_url('order/place_order')?>",
+                            method: "POST",
+                            data: {
+                                table_number,
+                                customer_name
+                            },
+                            dataType: "json",
+                            success: function(response) {
+                                if (response.success) {
+                                    // Tampilkan pesan sukses
+                                    Swal.fire({
+                                        title: 'Success',
+                                        text: 'Order has been placed successfully!',
+                                        icon: 'success',
+                                        timer: 2000, // Timer 2 detik
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location
+                                            .reload(); // Reload halaman setelah SweetAlert selesai
+                                    });
+                                } else {
+                                    // Tampilkan pesan error
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: response.message,
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Failed to place the order. Please try again later.',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    }
+                });
             }
         });
     });
+
     // Fungsi untuk mengupdate cart di server
     function updateCart(productId, quantity) {
         $.ajax({
@@ -304,7 +369,7 @@ $(document).ready(function() {
                 product_id: productId
             },
             success: function(response) {
-                console.log('Produk berhasil dihapus dari keranjang');
+                location.reload();
             },
             error: function(xhr, status, error) {
                 console.error('Error removing product:', error);
@@ -315,6 +380,26 @@ $(document).ready(function() {
     // Muat keranjang saat halaman dimuat
     loadCart();
 });
+</script>
+
+<!-- Detail Order -->
+<script>
+function loadOrderDetail(orderId) {
+    // Gunakan AJAX untuk mengambil detail pesanan
+    $.ajax({
+        url: "<?=base_url('order/detail/')?>" + orderId,
+        method: "GET",
+        success: function(response) {
+            // Masukkan konten ke dalam modal
+            $('#modalOrderContent').html(response);
+
+        },
+        error: function() {
+            $('#modalOrderContent').html(
+                '<p class="text-danger">Failed to load order details. Please try again later.</p>');
+        }
+    });
+}
 </script>
 </body>
 

@@ -30,11 +30,20 @@ class Order_m extends CI_Model
     // Mendapatkan detail pesanan berdasarkan ID order
     public function get_order_details($order_id)
     {
-        $this->db->select('od.*, p.name as product_name, p.price as product_price');
+        $this->db->select('od.*, p.name as product_name, p.price as product_price, o.customer_name, o.table_number, o.order_date');
         $this->db->from('order_detail od');
-        $this->db->join('tb_product p', 'p.id = od.product_id');
+        $this->db->join('product p', 'p.id = od.product_id');
+        $this->db->join('order o', 'o.id = od.order_id');
         $this->db->where('od.order_id', $order_id);
-        return $this->db->get()->result();
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result(); // Mengembalikan semua produk untuk order
+        } else {
+            log_message('error', 'Order details not found for Order ID: ' . $order_id);
+            return null; // Jika tidak ditemukan
+        }
     }
 
     // Mengupdate status pesanan
