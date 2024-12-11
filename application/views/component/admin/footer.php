@@ -20,6 +20,8 @@
 
 <!-- JS Libraies -->
 <script src="<?=base_url('assets/')?>modules/sweetalert/sweetalert2.all.js"></script>
+<script src="<?=base_url('assets/')?>modules/chart.min.js"></script>
+<script src="<?=base_url('assets/')?>modules/bootstrap-daterangepicker/daterangepicker.js"></script>
 <script src="<?=base_url('assets/')?>modules/datatables/datatables.min.js"></script>
 <script src="<?=base_url('assets/')?>modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script src="<?=base_url('assets/')?>modules/datatables/Select-1.2.4/js/dataTables.select.min.js"></script>
@@ -97,7 +99,59 @@ $(document).ready(function() {
 
 <!-- Data Tables -->
 <script>
-$(".table").dataTable();
+$(".table-normal").DataTable();
+
+
+$('.daterange-cus').daterangepicker({
+    locale: {
+        format: 'YYYY-MM-DD'
+    },
+    drops: 'down',
+    opens: 'right',
+});
+
+let table = $(".table-report").DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: 'report/data',
+        type: 'POST',
+        data: function(d) {
+            d.date_range = $('.daterange-cus').val()
+        }
+    },
+    columns: [{
+            data: 'no'
+        },
+        {
+            data: 'product_name'
+        },
+        {
+            data: 'quantity_sold'
+        },
+        {
+            data: 'total',
+            render: function(data, type, row) {
+                // Format data menjadi currency
+                return new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0
+                }).format(data);
+            }
+        }
+    ]
+});
+
+$('.daterange-cus').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+    table.ajax.reload(); // Reload DataTable when date is selected
+});
+
+$('.daterange-cus').on('cancel.daterangepicker', function(ev, picker) {
+    $(this).val('');
+    table.ajax.reload(); // Reload DataTable when date is cleared
+});
 </script>
 
 <!-- SLUG AUTO -->
@@ -138,269 +192,16 @@ $.uploadPreview({
     success_callback: null // Default: null
 });
 </script>
-
-<!-- Add To Cart -->
-<script>
-$(document).ready(function() {
-    // Fungsi untuk memuat data keranjang
-    function loadCart() {
-        $.ajax({
-            url: "<?=base_url('order/load_cart')?>",
-            method: "GET",
-            dataType: "json",
-            success: function(response) {
-                let cartHtml = '';
-                let total = 0;
-
-                response.cart.forEach(item => {
-                    cartHtml += `
-                        <div class="receipt-item">
-    <p><strong>${item.name}</strong></p>
-    <p>Rp ${item.price.toLocaleString()} x
-        <button class="btn btn-sm btn-secondary btn-decrease" data-id="${item.product_id}">-</button>
-        <span id="quantity-${item.product_id}">${item.quantity}</span>
-        <button class="btn btn-sm btn-secondary btn-increase" data-id="${item.product_id}">+</button>
-        = Rp ${(item.subtotal).toLocaleString()}</p>
-</div>
-`;
-                    total += item.subtotal;
-                });
-
-                $('#cart-body').html(cartHtml);
-                $('#total-price').text(`Rp ${total.toLocaleString()}`);
-            }
-        });
-    }
-
-    // Tambahkan produk ke keranjang saat tombol "Tambah" diklik
-    $(document).on('click', '.btn-add-to-cart', function() {
-        const product_id = $(this).data('id');
-        const product_name = $(this).data('name');
-        const product_price = $(this).data('price');
-
-        $.ajax({
-            url: "<?=base_url('order/add_to_cart')?>",
-            method: "POST",
-            data: {
-                product_id,
-                product_name,
-                product_price,
-                quantity: 1
-            },
-            dataType: "json",
-            success: function(response) {
-                if (response.success) {
-                    // alert('Produk berhasil ditambahkan ke keranjang!');
-                    loadCart();
-                }
-            }
-        });
-    });
-
-    // Ketika tombol + diklik
-    $(document).on('click', '.btn-increase', function() {
-        // $('.btn-increase').on('click', function() {
-        console.log("test");
-
-        var productId = $(this).data('id');
-        var quantityElement = $('#quantity-' + productId);
-        var quantity = parseInt(quantityElement.text());
-
-        // Meningkatkan jumlah
-        quantity++;
-        quantityElement.text(quantity);
-
-        // Update subtotal
-        var price = parseFloat($(this).closest('.receipt-item').find('p').first().text().replace('Rp ',
-            '').replace(' x', '').trim());
-        var subtotal = price * quantity;
-        $(this).closest('.receipt-item').find('p').last().text('Rp ' + subtotal.toLocaleString());
-
-        // Update session cart dengan jumlah baru
-        updateCart(productId, quantity);
-    });
-
-    $(document).on('click', '.btn-decrease', function() {
-        console.log("Tombol - diklik");
-
-        var productId = $(this).data('id');
-        var quantityElement = $('#quantity-' + productId);
-        var quantity = parseInt(quantityElement.text());
-
-        // Mengurangi jumlah jika lebih dari 1
-        if (quantity > 1) {
-            quantity--;
-            quantityElement.text(quantity);
-
-            // Update subtotal
-            var price = parseFloat($(this).closest('.receipt-item').find('p').first().text().replace(
-                'Rp ', '').replace(' x', '').trim());
-            var subtotal = price * quantity;
-            $(this).closest('.receipt-item').find('p').last().text('Rp ' + subtotal.toLocaleString());
-
-            // Update session cart dengan jumlah baru
-            updateCart(productId, quantity);
-        } else {
-            // Jika quantity sudah 1 dan tombol - ditekan, gunakan SweetAlert untuk konfirmasi
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Anda yakin ingin menghapus produk ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, hapus',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Hapus produk dari keranjang di session
-                    removeFromCart(productId);
-                    // Hapus elemen produk di struk
-                    $(this).closest('.receipt-item').remove();
-                    Swal.fire('Dihapus!', 'Produk berhasil dihapus.', 'success');
-                }
-            });
-        }
-    });
-
-    // Simpan pesanan
-    $('#place-order').on('click', function() {
-        let table_number, customer_name;
-
-        // SweetAlert untuk input nomor meja
-        Swal.fire({
-            title: 'Enter Table Number',
-            input: 'text',
-            inputPlaceholder: 'Table Number',
-            showCancelButton: true,
-            confirmButtonText: 'Next',
-            cancelButtonText: 'Cancel',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'Table number cannot be empty!';
-                }
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                table_number = result.value; // Simpan nomor meja
-
-                // SweetAlert untuk input nama pelanggan
-                Swal.fire({
-                    title: 'Enter Customer Name',
-                    input: 'text',
-                    inputPlaceholder: 'Customer Name',
-                    showCancelButton: true,
-                    confirmButtonText: 'Submit',
-                    cancelButtonText: 'Cancel',
-                    inputValidator: (value) => {
-                        if (!value) {
-                            return 'Customer name cannot be empty!';
-                        }
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        customer_name = result.value; // Simpan nama pelanggan
-
-                        // Jalankan AJAX hanya setelah kedua input valid
-                        $.ajax({
-                            url: "<?=base_url('order/place_order')?>",
-                            method: "POST",
-                            data: {
-                                table_number,
-                                customer_name
-                            },
-                            dataType: "json",
-                            success: function(response) {
-                                if (response.success) {
-                                    // Tampilkan pesan sukses
-                                    Swal.fire({
-                                        title: 'Success',
-                                        text: 'Order has been placed successfully!',
-                                        icon: 'success',
-                                        timer: 2000, // Timer 2 detik
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        location
-                                            .reload(); // Reload halaman setelah SweetAlert selesai
-                                    });
-                                } else {
-                                    // Tampilkan pesan error
-                                    Swal.fire({
-                                        title: 'Error',
-                                        text: response.message,
-                                        icon: 'error'
-                                    });
-                                }
-                            },
-                            error: function() {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: 'Failed to place the order. Please try again later.',
-                                    icon: 'error'
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    });
-
-    // Fungsi untuk mengupdate cart di server
-    function updateCart(productId, quantity) {
-        $.ajax({
-            url: '<?=base_url("order/update_cart")?>',
-            type: 'POST',
-            data: {
-                product_id: productId,
-                quantity: quantity
-            },
-            success: function(response) {
-                // Handle response jika perlu
-                loadCart();
-            }
-        });
-    }
-
-    // Fungsi untuk menghapus produk dari cart
-    function removeFromCart(productId) {
-        $.ajax({
-            url: '<?=base_url("order/remove_from_cart")?>',
-            type: 'POST',
-            data: {
-                product_id: productId
-            },
-            success: function(response) {
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('Error removing product:', error);
-            }
-        });
-    }
-
-    // Muat keranjang saat halaman dimuat
-    loadCart();
-});
-</script>
-
-<!-- Detail Order -->
-<script>
-function loadOrderDetail(orderId) {
-    // Gunakan AJAX untuk mengambil detail pesanan
-    $.ajax({
-        url: "<?=base_url('order/detail/')?>" + orderId,
-        method: "GET",
-        success: function(response) {
-            // Masukkan konten ke dalam modal
-            $('#modalOrderContent').html(response);
-
-        },
-        error: function() {
-            $('#modalOrderContent').html(
-                '<p class="text-danger">Failed to load order details. Please try again later.</p>');
-        }
-    });
-}
-</script>
+<!-- Add to cart -->
+<?php $this->load->view('component/admin/cart');?>
+<!-- Script modal detail -->
+<?php $this->load->view('component/admin/script_modal_detail');?>
+<!-- Script print report -->
+<?php $this->load->view('component/admin/print_report');?>
+<!-- Chart -->
+<?php $this->load->view('component/admin/chart');?>
+<!-- Price input -->
+<?php $this->load->view('component/admin/price_input');?>
 </body>
 
 </html>

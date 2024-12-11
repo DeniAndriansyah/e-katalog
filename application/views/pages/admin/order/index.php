@@ -15,7 +15,7 @@
                     <!-- <div class="alert alert-danger">asas</div> -->
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-striped">
+                            <table class="table table-normal table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -73,6 +73,7 @@ foreach ($orders as $order) {?>
                 <div id="modalOrderContent" class="d-flex justify-content-center">Loading...</div>
             </div>
             <div class="modal-footer bg-whitesmoke br">
+                <a href="#" id="printBtn" class="btn btn-primary"><span class="fa fa-print"></span></a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>

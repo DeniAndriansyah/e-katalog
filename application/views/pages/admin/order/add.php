@@ -8,7 +8,7 @@
         <div class="section-body">
             <div class="row">
                 <!-- Bagian kiri untuk produk -->
-                <div class="col-lg-8 col-md-8 col-sm-8">
+                <div class="col-sm-9">
                     <div class="row">
                         <!-- Looping Produk -->
                         <?php foreach ($products as $product): ?>
@@ -32,10 +32,10 @@
                 </div>
 
                 <!-- Bagian kanan untuk receipt -->
-                <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
+                <div class="col-sm-3 d-flex flex-column justify-content-start align-items-center">
                     <div class="receipt">
                         <div class="receipt-header">
-                            <h4>Receipt</h4>
+                            <h4 class="text-center">Receipt</h4>
                             <p>Table Number: <span id="table-number">-</span></p>
                             <p>Customer Name: <span id="customer-name">-</span></p>
                             <?php date_default_timezone_set('Asia/Jakarta');?>
@@ -48,7 +48,7 @@
 
                         <div class="receipt-footer">
                             <p><strong>Total: <span id="total-price">Rp 0</span></strong></p>
-                            <button type="button" id="place-order" class="btn btn-success mt-3">Save Order</button>
+                            <button type="button" id="place-order" class="btn btn-success mt-3">Checkout</button>
                         </div>
                     </div>
                 </div>

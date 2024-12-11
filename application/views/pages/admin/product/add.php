@@ -24,8 +24,9 @@
 
                                 <div class="form-group">
                                     <label for="price">Price</label>
-                                    <input type="number" name="price" id="price"
-                                        class="form-control <?=form_error('price') ? "is-invalid" : ""?>">
+                                    <input type="text" name="price" id="price"
+                                        class="form-control price-input <?=form_error('price') ? "is-invalid" : ""?>"
+                                        oninput="formatCurrency(this)">
                                     <?=form_error('price', '<div class="invalid-feedback">', '</div>')?>
                                 </div>
 

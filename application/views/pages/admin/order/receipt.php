@@ -10,13 +10,15 @@
 
     <h4>Items:</h4>
     <ul>
-        <?php $sub_total = 0;foreach ($order_detail as $item): ?>
+        <?php foreach ($order_detail as $item): ?>
 
         <li><?=$item->product_name?> - <?=$item->quantity?> x <?=number_format($item->product_price, 0)?></li>
-        <?php $sub_total += $item->product_price * $item->quantity;endforeach;?>
+        <?php endforeach;?>
     </ul>
 
     <hr>
 
-    <p><strong>Total:</strong> Rp.<?=number_format($sub_total, 0)?></p>
+    <p><strong>Total:</strong> Rp.<?=number_format($order->total, 0)?></p>
+    <p><strong>Amount Paid:</strong> Rp.<?=number_format($order->amount_paid, 0)?></p>
+    <p><strong>Change:</strong> Rp.<?=number_format($order->change, 0)?></p>
 </div>

@@ -7,13 +7,16 @@ class Order extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        if (!$this->session->userdata('login')) {
+            redirect('auth');
+        }
         $this->load->model('Base_m');
         $this->load->model('Order_m');
     }
 
     public function index()
     {
-        $order = $this->Base_m->all('order');
+        $order = $this->Base_m->all('order', 'created_at', 'DESC');
         $data = [
             'title' => 'Order',
             'orders' => $order,
@@ -110,10 +113,21 @@ class Order extends CI_Controller
     {
         $table_number = htmlspecialchars($this->input->post('table_number'));
         $customer_name = htmlspecialchars($this->input->post('customer_name'));
+        $amount_paid = htmlspecialchars($this->input->post('amount_paid'));
         $cart = $this->session->userdata('cart') ?? [];
 
         if (empty($cart)) {
             echo json_encode(['success' => false, 'message' => 'Keranjang kosong!']);
+            return;
+        }
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['subtotal'];
+        }
+
+        if ($amount_paid < $total) {
+            echo json_encode(['success' => false, 'message' => 'Jumlah pembayaran tidak mencukupi!']);
             return;
         }
 
@@ -122,6 +136,9 @@ class Order extends CI_Controller
             'customer_name' => $customer_name,
             'order_date' => date('Y-m-d'),
             'status' => 'diproses',
+            'total' => $total,
+            'amount_paid' => $amount_paid,
+            'change' => $amount_paid - $total,
         ];
 
         $order_id = $this->Order_m->insert_order($order_data);
@@ -138,7 +155,7 @@ class Order extends CI_Controller
         }
 
         $this->session->unset_userdata('cart');
-        echo json_encode(['success' => true, 'message' => 'Pesanan berhasil disimpan!']);
+        echo json_encode(['success' => true, 'message' => 'Pesanan berhasil disimpan!', 'order_id' => $order_id]);
     }
 
     public function update_cart()
@@ -165,6 +182,19 @@ class Order extends CI_Controller
             // Jika produk tidak ada dalam cart
             echo json_encode(['success' => false, 'message' => 'Product not found in cart']);
         }
+    }
+
+    public function print_receipt($order_id)
+    {
+        $order_detail = $this->Order_m->get_order_details($order_id);
+        $order = $this->Order_m->get_order_by_id($order_id);
+
+        $data = [
+            'order_detail' => $order_detail,
+            'order' => $order,
+        ];
+
+        $this->load->view('pages/admin/order/print_receipt', $data);
     }
 
 }

@@ -17,7 +17,7 @@
                     <!-- <div class="alert alert-danger">asas</div> -->
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-striped">
+                            <table class="table table-normal table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -35,7 +35,7 @@ foreach ($products as $product) {?>
                                     <tr>
                                         <td><?=$no++;?></td>
                                         <td><?=$product->name?></td>
-                                        <td><?=$product->price?></td>
+                                        <td><?='Rp. ' . number_format($product->price, 0, ',', '.')?></td>
                                         <td><?=$product->status == 1 ? "Tersedia" : "Tidak Tersedia"?></td>
                                         <td>
                                             <img src="<?=base_url('assets/uploads/product/' . $product->image)?>" alt=""
