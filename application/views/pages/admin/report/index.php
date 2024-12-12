@@ -15,7 +15,7 @@
                                         <label>
                                             <h5>Rentang Waktu</h5>
                                         </label>
-                                        <div class="input-group">
+                                        <div class="input-group" style=" max-width: 360px;">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
                                                     <i class="fas fa-calendar"></i>
