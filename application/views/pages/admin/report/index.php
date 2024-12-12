@@ -10,7 +10,7 @@
                     <div class="card">
                         <div class="card-body pt-0">
                             <div class="row px-3 d-flex align-items-center">
-                                <div class="col-sm-12 col-md-4 px-0 mt-2">
+                                <div class="col-sm-12 col-md-5 px-0 mt-2">
                                     <div class="form-group">
                                         <label>
                                             <h5>Rentang Waktu</h5>
