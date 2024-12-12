@@ -17,7 +17,7 @@
                                 <h4>Total Order Hari Ini</h4>
                             </div>
                             <div class="card-body">
-                                <?=$orders_today?>
+                                <?=$orders_today ?? 0?>
                             </div>
                         </div>
                     </div>
@@ -32,7 +32,7 @@
                                 <h4>Order Belum Selesai</h4>
                             </div>
                             <div class="card-body">
-                                <?=$orders_unfinished?>
+                                <?=$orders_unfinished ?? 0?>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                                 <h4>Pendapatan Hari Ini</h4>
                             </div>
                             <div class="card-body">
-                                <?='Rp. ' . number_format($income_today, 0, ',', '.')?>
+                                <?='Rp. ' . number_format($income_today ?? 0, 0, ',', '.')?>
                             </div>
                         </div>
                     </div>
@@ -62,7 +62,7 @@
                                 <h4>Pendapatan bulan ini</h4>
                             </div>
                             <div class="card-body">
-                                <?='Rp. ' . number_format($income_this_month, 0, ',', '.')?>
+                                <?='Rp. ' . number_format($income_this_month ?? 0, 0, ',', '.')?>
                             </div>
                         </div>
                     </div>
