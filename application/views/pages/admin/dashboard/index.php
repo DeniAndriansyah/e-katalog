@@ -92,14 +92,6 @@
                                                     <p><strong>Table Number:</strong> <?=$order['table_number']?></p>
                                                     <p><strong>Order Date:</strong> <?=$order['created_at']?></p>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-12 col-sm-12">
-                                                    <p><strong>Total:</strong> Rp.<?=number_format($order['total'], 0)?>
-                                                    </p>
-                                                    <p><strong>Amount Paid:</strong>
-                                                        Rp.<?=number_format($order['amount_paid'], 0)?></p>
-                                                    <p><strong>Change:</strong>
-                                                        Rp.<?=number_format($order['change'], 0)?></p>
-                                                </div>
                                             </div>
                                             <!-- Bagian untuk menampilkan detail produk -->
                                             <div class="row">
@@ -138,7 +130,7 @@
                             <h4>Statistik Penjualan 10 Hari Terakhir</h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="myChart"></canvas>
+                            <canvas id="myChart" style="width: 100%; min-height: 400px; max-height: 500px;"></canvas>
                         </div>
                     </div>
                 </div>

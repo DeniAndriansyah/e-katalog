@@ -30,18 +30,20 @@
                                 </div>
                             </div>
                             <div class="row px-3">
-                                <table class="table table-report table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Product Name</th>
-                                            <th>Quantity Sold</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-report table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity Sold</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>

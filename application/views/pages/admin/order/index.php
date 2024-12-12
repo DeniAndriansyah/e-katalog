@@ -15,41 +15,43 @@
                     <!-- <div class="alert alert-danger">asas</div> -->
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-normal table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Table Number</th>
-                                        <th>Customer Name</th>
-                                        <th>Order Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php $no = 1;
+                            <div class="table-responsive">
+                                <table class="table table-normal table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Table Number</th>
+                                            <th>Customer Name</th>
+                                            <th>Order Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php $no = 1;
 foreach ($orders as $order) {?>
-                                    <tr>
-                                        <td><?=$no++;?></td>
-                                        <td><?=$order->table_number?></td>
-                                        <td><?=$order->customer_name?></td>
-                                        <td><?=$order->order_date?></td>
-                                        <td><?=$order->status?></td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
-                                                data-target="#orderDetailModal"
-                                                onclick="loadOrderDetail(<?=$order->id?>)">
-                                                <span class="fa fa-eye"></span> Detail
-                                            </button>
-                                            <a href="<?=base_url('order/delete/' . $order->id)?>"
-                                                class="btn btn-sm btn-danger btn-hapus">
-                                                <span class="fa fa-trash"></span> Del
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <?php }?>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <td><?=$no++;?></td>
+                                            <td><?=$order->table_number?></td>
+                                            <td><?=$order->customer_name?></td>
+                                            <td><?=$order->order_date?></td>
+                                            <td><?=$order->status?></td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal"
+                                                    data-target="#orderDetailModal"
+                                                    onclick="loadOrderDetail(<?=$order->id?>)">
+                                                    <span class="fa fa-eye"></span> Detail
+                                                </button>
+                                                <a href="<?=base_url('order/delete/' . $order->id)?>"
+                                                    class="btn btn-sm btn-danger btn-hapus">
+                                                    <span class="fa fa-trash"></span> Del
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <?php }?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
