@@ -106,6 +106,12 @@ $total_pendapatan += $order->total; // Tambahkan total penjualan ke total pendap
     <div class="footer">
         <p>&copy; <?=date('Y')?> - Laporan Penjualan</p>
     </div>
+    <!-- script auto print when load -->
+    <script>
+    window.onload = function() {
+        window.print();
+    };
+    </script>
 </body>
 
 

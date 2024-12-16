@@ -22,6 +22,12 @@ class Base_m extends CI_Model
         return $this->db->get_where($table, $where)->row();
     }
 
+    // Product
+    public function get_all_where($table, $where)
+    {
+        return $this->db->get_where($table, $where)->result();
+    }
+
     public function all_product()
     {
         $this->db->select('product.*, category.name as category');

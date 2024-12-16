@@ -32,7 +32,7 @@ class Order extends CI_Controller
     {
         $data = [
             'title' => 'Add Order',
-            'products' => $this->Base_m->all('product'),
+            'products' => $this->Base_m->get_all_where('product', ['status' => '1']),
         ];
         $this->load->view('component/admin/header', $data);
         $this->load->view('component/admin/sidebar');
