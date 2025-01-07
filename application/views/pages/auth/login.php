@@ -31,8 +31,8 @@
     <!-- /END GA -->
 </head>
 
-<body>
-    <div id="app">
+<body style="background: url(<?=base_url("assets/uploads/ft/inz.jpeg")?>) center no-repeat; background-size: cover;">
+<div id="app">
         <section class="section">
             <div class="container mt-5">
                 <div class="row">
@@ -94,6 +94,7 @@
     <script src="<?=base_url()?>assets/modules/nicescroll/jquery.nicescroll.min.js"></script>
     <script src="<?=base_url()?>assets/modules/moment.min.js"></script>
     <script src="<?=base_url()?>assets/js/stisla.js"></script>
+    <script src="<?=base_url('assets/')?>modules/sweetalert/sweetalert2.all.js"></script>
 
     <!-- JS Libraies -->
 
@@ -103,5 +104,24 @@
     <script src="<?=base_url()?>assets/js/scripts.js"></script>
     <script src="<?=base_url()?>assets/js/custom.js"></script>
 </body>
-
+<script>
+    // sweetalert
+    <?php if ($this->session->flashdata('success')) {?>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '<?=$this->session->flashdata('success')?>',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    <?php } else if ($this->session->flashdata('error')) {?>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '<?=$this->session->flashdata('error')?>',
+        showConfirmButton: false,
+        timer: 1500
+    })
+    <?php }?>
+</script>
 </html>

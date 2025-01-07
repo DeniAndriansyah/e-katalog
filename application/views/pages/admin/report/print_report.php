@@ -64,6 +64,7 @@
     <div class="header">
         <h1>Laporan Penjualan Produk</h1>
         <p>Rentang Waktu: <?=$date_range?></p>
+        <?php date_default_timezone_set('Asia/Jakarta');?>
         <p>Printed on: <?=date('Y-m-d H:i:s')?></p>
     </div>
 

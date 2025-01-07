@@ -42,10 +42,6 @@ foreach ($orders as $order) {?>
                                                     onclick="loadOrderDetail(<?=$order->id?>)">
                                                     <span class="fa fa-eye"></span> Detail
                                                 </button>
-                                                <a href="<?=base_url('order/delete/' . $order->id)?>"
-                                                    class="btn btn-sm btn-danger btn-hapus">
-                                                    <span class="fa fa-trash"></span> Del
-                                                </a>
                                             </td>
                                         </tr>
                                         <?php }?>

@@ -1,10 +1,10 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="<?=base_url('dashboard')?>">Inzomnia</a>
+            <a href="<?=base_url('dashboard')?>">Inzomnia Coffee Shop</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="<?=base_url('dashboard')?>">INZ</a>
+            <a href="<?=base_url('dashboard')?>">INZOM</a>
         </div>
         <ul class="sidebar-menu">
             <li class="<?=$this->uri->segment(1) === 'dashboard' ? "active" : ""?>"><a class="nav-link"
@@ -25,7 +25,5 @@
 
 
         </ul>
-
-
     </aside>
 </div>
