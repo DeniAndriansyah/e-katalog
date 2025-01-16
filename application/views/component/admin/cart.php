@@ -121,37 +121,53 @@ $(document).ready(function() {
     });
 
     // Simpan pesanan
-    $('#place-order').on('click', function() {
-        // Tampilkan SweetAlert untuk input data pelanggan
-        promptUserInput(
-            'Enter Table Number',
-            'Table Number',
-            'Table number cannot be empty!'
-        ).then((tableNumber) => {
-            if (tableNumber) {
-                promptUserInput(
-                    'Enter Customer Name',
-                    'Customer Name',
-                    'Customer name cannot be empty!'
-                ).then((customerName) => {
-                    if (customerName) {
-                        promptUserInput(
-                            'Enter Amount Paid',
-                            'Amount Paid',
-                            'Amount paid cannot be empty!',
-                            true // Aktifkan format currency
-                        ).then((amountPaid) => {
-                            if (amountPaid) {
-                                // Kirim data pesanan ke server
-                                placeOrder(tableNumber, customerName, amountPaid
-                                    .replace(/[^0-9]/g, ''));
-                            }
-                        });
-                    }
-                });
+    $('#place-order').on('click', function () {
+    // Tampilkan SweetAlert untuk input data pelanggan
+    promptUserInput(
+        'Enter Table Number',
+        'Table Number',
+        'Table number cannot be empty!'
+    ).then((tableNumber) => {
+        if (tableNumber) {
+            // Validasi tableNumber tidak boleh mengandung huruf
+            if (!/^\d+$/.test(tableNumber)) {
+                Swal.fire('Error', 'Inputan harus berupa angka!', 'error');
+                return;
             }
-        });
+
+            promptUserInput(
+                'Enter Customer Name',
+                'Customer Name',
+                'Customer name cannot be empty!'
+            ).then((customerName) => {
+                if (customerName) {
+                    // Validasi customerName tidak boleh mengandung angka
+                    if (!/^[a-zA-Z\s]+$/.test(customerName)) {
+                        Swal.fire('Error', 'Inputan harus berupa huruf!', 'error');
+                        return;
+                    }
+
+                    promptUserInput(
+                        'Enter Amount Paid',
+                        'Amount Paid',
+                        'Amount paid cannot be empty!',
+                        true // Aktifkan format currency
+                    ).then((amountPaid) => {
+                        if (amountPaid) {
+                            // Kirim data pesanan ke server
+                            placeOrder(
+                                tableNumber,
+                                customerName,
+                                amountPaid.replace(/[^0-9]/g, '')
+                            );
+                        }
+                    });
+                }
+            });
+        }
     });
+});
+
 
     // Fungsi untuk SweetAlert input
     function promptUserInput(title, placeholder, validationMessage, formatCurrency = false) {
